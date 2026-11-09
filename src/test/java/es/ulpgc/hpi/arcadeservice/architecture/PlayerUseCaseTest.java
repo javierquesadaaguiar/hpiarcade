@@ -30,4 +30,20 @@ class PlayerUseCaseTest {
         assertThrows(IllegalArgumentException.class, () -> useCase.create("Ada"));
         assertEquals(1, useCase.list().size());
     }
+
+    @Test
+    void rejectsDuplicateNicknameIgnoringCaseAndSpaces() {
+        var useCase = new PlayerUseCaseImpl(new PlayerRepositoryImpl());
+        useCase.create("Ada");
+        assertThrows(IllegalArgumentException.class, () -> useCase.create("  aDa "));
+        assertEquals(1, useCase.list().size());
+    }
+
+    @Test
+    void rejectedDuplicateDoesNotConsumeAnId() {
+        var useCase = new PlayerUseCaseImpl(new PlayerRepositoryImpl());
+        useCase.create("Ada");
+        assertThrows(IllegalArgumentException.class, () -> useCase.create("Ada"));
+        assertEquals(2L, useCase.create("Grace").id());
+    }
 }

@@ -10,5 +10,7 @@ public interface PlayerRepository {
 
     Optional<Player> findById(long id);
 
+    boolean existsByNickname(String nickname);
+
     void save(Player player);
 }

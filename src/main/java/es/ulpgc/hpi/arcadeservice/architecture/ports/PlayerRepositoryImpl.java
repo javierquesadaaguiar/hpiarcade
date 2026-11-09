@@ -20,6 +20,12 @@ public final class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
+    public boolean existsByNickname(String nickname) {
+        return players.values().stream()
+            .anyMatch(player -> player.nickname().equalsIgnoreCase(nickname.trim()));
+    }
+
+    @Override
     public void save(Player player) {
         players.put(player.id(), player);
     }
