@@ -81,4 +81,14 @@ class HttpApiTest {
         assertEquals(400, get("/api/leaderboard?limit=-2").statusCode());
         assertEquals(400, get("/api/leaderboard?limit=abc").statusCode());
     }
+
+    @Test
+    void malformedBodiesAreRejectedWith400() throws Exception {
+        player("Ada");
+        assertEquals(400, post("/api/players", "{bad").statusCode());
+        assertEquals(400, post("/api/players", "").statusCode());
+        assertEquals(400, post("/api/players/1/scores", "{bad").statusCode());
+        assertEquals(400, post("/api/players/1/scores", "").statusCode());
+        assertEquals(400, post("/api/players/1/scores", "{\"points\":\"x\"}").statusCode());
+    }
 }

@@ -1,6 +1,7 @@
 package es.ulpgc.hpi.arcadeservice.infrastructure.web;
 
 import es.ulpgc.hpi.arcadeservice.architecture.usecases.PlayerUseCase;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.javalin.Javalin;
 import io.javalin.http.NotFoundResponse;
 
@@ -37,6 +38,8 @@ public final class PlayerHttpAdapter {
                 var limit = ctx.queryParam("limit");
                 ctx.json(players.leaderboard(limit == null ? null : Integer.valueOf(limit)));
             });
+            config.routes.exception(JsonProcessingException.class, (error, ctx) ->
+                ctx.status(400).json(Map.of("error", "Invalid JSON body")));
             config.routes.exception(IllegalArgumentException.class, (error, ctx) ->
                 ctx.status(400).json(Map.of("error", error.getMessage())));
         });
