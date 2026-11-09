@@ -25,7 +25,9 @@ If you work from the course's `2026:2027` folder on macOS, copy or clone this re
 | `GET` | `/health` | Returns `{"status":"ok"}`. |
 | `GET` | `/api/players` | Lists all players. |
 | `GET` | `/api/players/{id}` | Returns one player, or `404` if it does not exist. |
-| `POST` | `/api/players` | Creates a player from `{"nickname":"Ada"}`; returns `201` and a `Location` header. |
+| `POST` | `/api/players` | Creates a player from `{"nickname":"Ada"}`; returns `201` and a `Location` header. Nicknames must be unique (ignoring case); a blank or duplicate nickname returns `400`. |
+| `POST` | `/api/players/{id}/scores` | Adds points from `{"points":10}` to the player's total and returns the updated player (`200`). Unknown player: `404`; zero, negative or invalid points: `400`. |
+| `GET` | `/api/leaderboard` | Lists players ordered by total score (highest first), ties broken by nickname alphabetically. Optional positive `limit` parameter; an invalid `limit` returns `400`. |
 
 Example:
 
@@ -34,6 +36,22 @@ curl -i -X POST http://localhost:7070/api/players \
   -H 'Content-Type: application/json' \
   -d '{"nickname":"Ada"}'
 ```
+
+Recording points and consulting the leaderboard:
+
+```bash
+curl -i -X POST http://localhost:7070/api/players/1/scores \
+  -H 'Content-Type: application/json' \
+  -d '{"points":10}'
+
+curl -i 'http://localhost:7070/api/leaderboard?limit=3'
+```
+
+## Versions
+
+- `v1.0.0`: initial service.
+- `v1.0.1`: fix, duplicate nicknames are now rejected.
+- `v1.1.0`: record points and leaderboard.
 
 ## Architecture
 
